@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>// portfolio — UX Designer, Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F1F2EC;
+    --paper-dim: #E8EAE2;
+    --chrome: #20242A;
+    --chrome-soft: #2B313A;
+    --ink: #14171A;
+    --ink-soft: #4A4F55;
+    --rule: #C7CABF;
+    --rule-dark: #3A4148;
+    --teal: #2F6F62;
+    --teal-bright: #3E8C7C;
+    --brass: #8A6E2F;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img, video { max-width: 100%; height: auto; display: block; }
+
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible, .file-item:focus-visible {
+    outline: 2px solid var(--teal-bright);
+    outline-offset: 2px;
+  }
+
+  /* ---------- IDE WINDOW ---------- */
+  .ide {
+    max-width: 1240px;
+    margin: clamp(12px, 3vw, 32px) auto;
+    border: 1px solid var(--rule-dark);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px -20px rgba(20,23,26,0.35);
+  }
+
+  /* Title bar */
+  .titlebar {
+    background: var(--chrome);
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    gap: 10px;
+    border-bottom: 1px solid var(--rule-dark);
+  }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.red { background: #E0564D; }
+  .dot.yellow { background: #E0B23F; }
+  .dot.green { background: #4DA876; }
+  .titlebar-label {
+    margin: 0 auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: #8B939E;
+  }
+
+  /* Tab bar */
+  .tabbar {
+    background: var(--chrome-soft);
+    display: flex;
+    border-bottom: 1px solid var(--rule-dark);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-dark) transparent;
+  }
+  .tabbar::-webkit-scrollbar { height: 4px; }
+  .tabbar::-webkit-scrollbar-thumb { background: var(--rule-dark); border-radius: 4px; }
+  .tab {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #9AA2AC;
+    padding: 10px 18px;
+    min-height: 40px;
+    flex: 0 0 auto;
+    border-right: 1px solid var(--rule-dark);
+    cursor: pointer;
+    white-space: nowrap;
+    background: transparent;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab .dirty { color: var(--teal-bright); margin-left: 6px; }
+  .tab:hover { background: rgba(255,255,255,0.04); color: #D6DADE; }
+  .tab.active {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--teal);
+  }
+
+  /* Body: sidebar + content */
+  .ide-body {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    min-height: 560px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--chrome);
+    color: #B7BEC6;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 18px 0;
+    border-right: 1px solid var(--rule-dark);
+  }
+  .sidebar-heading {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6B7480;
+    padding: 0 18px;
+    margin-bottom: 10px;
+  }
+  .file-tree { list-style: none; margin-bottom: 22px; }
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 18px;
+    cursor: pointer;
+    color: #B7BEC6;
+    transition: background 0.15s, color 0.15s;
+  }
+  .file-item .marker { color: #5A6470; width: 12px; }
+  .file-item:hover { background: rgba(255,255,255,0.05); color: #E4E7EA; }
+  .file-item.active {
+    background: rgba(47,111,98,0.18);
+    color: #DCEFE9;
+    border-left: 2px solid var(--teal-bright);
+    padding-left: 16px;
+  }
+  .file-item.active .marker { color: var(--teal-bright); }
+
+  /* Content pane */
+  .pane {
+    background: var(--paper);
+    overflow-y: auto;
+  }
+  .page { display: none; padding: clamp(28px, 4vw, 56px) clamp(22px, 5vw, 64px) 40px; }
+  .page.active { display: block; }
+
+  /* Hero (home) */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+    margin-bottom: 18px;
+  }
+  .eyebrow::before { content: "// "; color: var(--brass); }
+  h1.hero {
+    font-family: var(--serif);
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(34px, 6vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 720px;
+    margin-bottom: 22px;
+  }
+  h1.hero em { font-style: italic; color: var(--teal); }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin-bottom: 36px;
+  }
+  .cursor-blink {
+    display: inline-block;
+    width: 9px;
+    height: 1.1em;
+    background: var(--teal);
+    vertical-align: text-bottom;
+    animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .stack-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 5px 10px;
+    background: var(--paper-dim);
+  }
+
+  .log {
+    border-top: 1px solid var(--rule);
+    max-width: 680px;
+  }
+  .log-entry {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .log-entry::before {
+    content: "";
+    position: absolute;
+    left: 84px;
+    top: 28px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+  .log-date {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    padding-top: 2px;
+  }
+  .log-title {
+    font-size: 16.5px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .log-title a { color: var(--ink); }
+  .log-title a:hover { color: var(--teal); }
+  .log-desc { font-size: 14.5px; color: var(--ink-soft); }
+
+  /* Case study page */
+  .cs-meta {
+    display: flex;
+    gap: 28px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .cs-meta span b { color: var(--ink); font-weight: 500; display: block; font-family: var(--sans); font-size: 13.5px; margin-top: 2px;}
+  h2.cs-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4.5vw, 38px);
+    font-weight: 400;
+    margin-bottom: 14px;
+    max-width: 680px;
+  }
+  .cs-body { max-width: 680px; }
+  .cs-body p { margin-bottom: 18px; color: var(--ink-soft); font-size: 15.5px; }
+  .cs-body h3 {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 32px 0 12px;
+  }
+  .placeholder-note {
+    margin-top: 40px;
+    padding: 14px 16px;
+    border: 1px dashed var(--rule);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--brass);
+    background: var(--paper-dim);
+  }
+
+  /* Media placeholder slots */
+  .media-slot { margin: 26px 0 30px; }
+  .media-frame {
+    background: var(--paper-dim);
+    border: 1px dashed var(--rule);
+    border-radius: 6px;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  .media-slot--video .media-frame { background: var(--chrome-soft); border-color: var(--rule-dark); }
+  .media-slot--video .media-label { color: #B7BEC6; }
+  .media-label {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .media-caption {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    opacity: 0.8;
+  }
+
+  /* Status bar */
+  .statusbar {
+    background: var(--chrome);
+    color: #9AA2AC;
+    font-family: var(--mono);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    padding: 7px 16px;
+    border-top: 1px solid var(--rule-dark);
+  }
+  .statusbar .branch::before { content: "⎇ "; color: var(--teal-bright); }
+  .statusbar-right { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+
+  @media (max-width: 1024px) {
+    .ide-body { grid-template-columns: 200px 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .ide-body { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .log-entry { grid-template-columns: 1fr; gap: 4px; }
+    .log-entry::before { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .titlebar-label { font-size: 11.5px; }
+    .tab { padding: 10px 14px; font-size: 12.5px; }
+    .cs-meta { gap: 14px 20px; }
+    .statusbar #status-page,
+    .statusbar [data-optional] { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-blink { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ide">
+
+  <div class="titlebar">
+    <div class="dots">
+      <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+    </div>
+    <div class="titlebar-label">portfolio — workspace</div>
+  </div>
+
+  <div class="tabbar" role="tablist">
+    <button class="tab active" data-target="home" role="tab" aria-selected="true">about.md</button>
+    <button class="tab" data-target="cs1" role="tab" aria-selected="false">case-study-ai-tooling.md</button>
+    <button class="tab" data-target="cs2" role="tab" aria-selected="false">case-study-p3-portal.md<span class="dirty"> ●</span></button>
+    <button class="tab" data-target="cs3" role="tab" aria-selected="false">case-study-early-work.md</button>
+    <button class="tab" data-target="notes" role="tab" aria-selected="false">field-notes.md</button>
+    <button class="tab" data-target="contact" role="tab" aria-selected="false">contact.md</button>
+  </div>
+
+  <div class="ide-body">
+
+    <nav class="sidebar">
+      <div class="sidebar-heading">explorer</div>
+      <ul class="file-tree">
+        <li class="file-item active" data-target="home"><span class="marker">▾</span>about.md</li>
+        <li class="file-item" data-target="cs1"><span class="marker">▸</span>case-study-ai-tooling.md</li>
+        <li class="file-item" data-target="cs2"><span class="marker">▸</span>case-study-p3-portal.md</li>
+        <li class="file-item" data-target="cs3"><span class="marker">▸</span>case-study-early-work.md</li>
+        <li class="file-item" data-target="notes"><span class="marker">▸</span>field-notes.md</li>
+        <li class="file-item" data-target="contact"><span class="marker">▸</span>contact.md</li>
+      </ul>
+      <div class="sidebar-heading">stack</div>
+      <ul class="file-tree">
+        <li class="file-item" style="cursor:default;"><span class="marker">#</span>vscode</li>
+        <li class="file-item" style="cursor:default;"><span class="marker">#</span>copilot cli</li>
+        <li class="file-item" style="cursor:default;"><span class="marker">#</span>github</li>
+      </ul>
+    </nav>
+
+    <div class="pane">
+
+      <!-- HOME / ABOUT -->
+      <section class="page active" id="home">
+        <div class="eyebrow">about.md — Senior UX Designer / Builder</div>
+        <h1 class="hero">I build <em>design tools and standards</em> for developers building with AI<span class="cursor-blink"></span></h1>
+        <p class="hero-sub">10+ years in UX. The last 3 spent moving from Figma into VSCode — designing and shipping tooling that developers use to build AI experiences, not just specifying it.</p>
+
+        <div class="stack-row">
+          <span class="pill">UX → builder</span>
+          <span class="pill">AI tooling</span>
+          <span class="pill">Researcher workflows</span>
+          <span class="pill">Ships in code</span>
+        </div>
+
+        <div class="log">
+          <div class="log-entry">
+            <div class="log-date">3 yrs</div>
+            <div>
+              <div class="log-title"><a href="#" data-target="cs1">Designing tools for expert technical users</a></div>
+              <div class="log-desc">Workflows for researchers doing iterative, high-stakes evaluation work — built directly in code, not handed off as specs.</div>
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-date">now</div>
+            <div>
+              <div class="log-title"><a href="#" data-target="cs2">A user portal, after a reorg</a></div>
+              <div class="log-desc">Placeholder — one-line description of who this is for and what changed.</div>
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-date">earlier</div>
+            <div>
+              <div class="log-title"><a href="#" data-target="cs3">Where it started</a></div>
+              <div class="log-desc">Earlier work, before the move into AI tooling — full process, real screens, real metrics.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CASE STUDY 1 -->
+      <section class="page" id="cs1">
+        <div class="cs-meta">
+          <span>ROLE<b>UX Designer</b></span>
+          <span>DURATION<b>3 years</b></span>
+          <span>STACK<b>VSCode · Copilot CLI · GitHub</b></span>
+          <span>FOCUS<b>Internal tooling</b></span>
+        </div>
+        <h2 class="cs-title">Designing tools for expert technical users</h2>
+        <div class="cs-body">
+          <p style="font-family:var(--mono); font-size:12px; color:var(--brass); margin-bottom:20px;">// note — details here are intentionally generalized. The underlying work is confidential; this describes the design problem and approach, not the product itself.</p>
+          <h3>// the problem</h3>
+          <p>Placeholder — describe the class of problem in general terms: what kind of cognitive load or workflow friction did expert users face, without naming the specific product or domain.</p>
+
+          <div class="media-slot">
+            <div class="media-frame">
+              <span class="media-label">[ recreated mockup — flow overview ]</span>
+            </div>
+            <p class="media-caption">Caption placeholder. Note: recreated for confidentiality — not the actual production interface.</p>
+          </div>
+
+          <h3>// what I built</h3>
+          <p>Placeholder — describe the actual workflows/dashboards/tools, and what it meant to design these directly in code rather than handing off specs.</p>
+
+          <div class="media-slot media-slot--video">
+            <div class="media-frame">
+              <span class="media-label">▶ [ demo video / screen recording placeholder ]</span>
+            </div>
+            <p class="media-caption">Caption placeholder. Swap for an embedded video or GIF walkthrough.</p>
+          </div>
+
+          <h3>// what changed</h3>
+          <p>Placeholder — outcomes, even directional: adoption, time saved, became the default tool for a team, etc.</p>
+        </div>
+        <div class="placeholder-note">// TODO — replace text + media. If any visuals come from confidential work, recreate the pattern rather than showing the real interface, and check your company's external comms policy before publishing.</div>
+      </section>
+
+      <!-- CASE STUDY 2 -->
+      <section class="page" id="cs2">
+        <div class="cs-meta">
+          <span>ROLE<b>UX Designer</b></span>
+          <span>DURATION<b>Ongoing</b></span>
+          <span>STACK<b>VSCode · Copilot CLI · GitHub</b></span>
+          <span>FOCUS<b>Researcher platform</b></span>
+        </div>
+        <h2 class="cs-title">A user portal, after the reorg</h2>
+        <div class="cs-body">
+          <h3>// the context</h3>
+          <p>Placeholder — frame the reorg neutrally: priorities shifted, you moved with the work, similar problems in a new surface. Specify your actual audience here.</p>
+          <h3>// in progress</h3>
+          <p>Placeholder — what you're building now, and how it draws on what you learned on the P1 project.</p>
+        </div>
+        <div class="placeholder-note">// TODO — fill in as the work develops.</div>
+      </section>
+
+      <!-- CASE STUDY 3 -->
+      <section class="page" id="cs3">
+        <div class="cs-meta">
+          <span>ROLE<b>UX Designer</b></span>
+          <span>DURATION<b>3 years</b></span>
+          <span>STACK<b>Figma</b></span>
+          <span>FOCUS<b>Earlier work</b></span>
+        </div>
+        <h2 class="cs-title">Where it started</h2>
+        <div class="cs-body">
+          <h3>// the problem</h3>
+          <p>Placeholder — this is your most freely shareable work, so go full detail: real problem, real constraints.</p>
+
+          <div class="media-slot">
+            <div class="media-frame">
+              <span class="media-label">[ real screenshot — before/after ]</span>
+            </div>
+            <p class="media-caption">Caption placeholder.</p>
+          </div>
+
+          <h3>// what I built</h3>
+          <p>Placeholder — process, decisions, collaboration.</p>
+          <h3>// what changed</h3>
+          <p>Placeholder — real metrics if you have them.</p>
+        </div>
+        <div class="placeholder-note">// TODO — this case study has the fewest restrictions, so lean into specifics and hard numbers here.</div>
+      </section>
+
+      <!-- FIELD NOTES -->
+      <section class="page" id="notes">
+        <div class="eyebrow">field-notes.md</div>
+        <h2 class="cs-title">Field notes</h2>
+        <div class="cs-body">
+          <p>Shorter, off-the-cuff thinking — posted on LinkedIn and Medium as it happens, rather than polished into full case studies.</p>
+
+          <div class="log" style="margin-top:28px;">
+            <div class="log-entry">
+              <div class="log-date">[date]</div>
+              <div>
+                <div class="log-title"><a href="#" target="_blank">Placeholder — post title</a></div>
+                <div class="log-desc">One-line placeholder description. Link out to the real LinkedIn/Medium post.</div>
+              </div>
+            </div>
+            <div class="log-entry">
+              <div class="log-date">[date]</div>
+              <div>
+                <div class="log-title"><a href="#" target="_blank">Placeholder — post title</a></div>
+                <div class="log-desc">One-line placeholder description.</div>
+              </div>
+            </div>
+            <div class="log-entry">
+              <div class="log-date">[date]</div>
+              <div>
+                <div class="log-title"><a href="#" target="_blank">Placeholder — post title</a></div>
+                <div class="log-desc">One-line placeholder description.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="placeholder-note">// TODO — pull in your real LinkedIn/Medium posts here. Link out with target="_blank", just titles + one-line descriptions — keep this page light.</div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="page" id="contact">
+        <div class="eyebrow">contact.md</div>
+        <h2 class="cs-title">Let's talk</h2>
+        <div class="cs-body">
+          <p>Placeholder — email, LinkedIn, resume link. Keep it short; this page has one job.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="branch">main · clean</div>
+    <div class="statusbar-right">
+      <span id="status-page">about.md</span>
+      <span data-optional>UTF-8</span>
+      <span>Seattle, WA</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const fileItems = document.querySelectorAll('.file-item[data-target]');
+  const pages = document.querySelectorAll('.page');
+  const statusLabel = document.getElementById('status-page');
+  const links = document.querySelectorAll('a[data-target]');
+
+  function activate(target) {
+    pages.forEach(p => p.classList.toggle('active', p.id === target));
+    tabs.forEach(t => {
+      const isActive = t.dataset.target === target;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-selected', isActive);
+    });
+    fileItems.forEach(f => f.classList.toggle('active', f.dataset.target === target));
+    const label = document.querySelector(`.tab[data-target="${target}"]`);
+    if (label) statusLabel.textContent = label.textContent.replace('●','').trim();
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.target)));
+  fileItems.forEach(f => f.addEventListener('click', () => activate(f.dataset.target)));
+  links.forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); activate(l.dataset.target); }));
+</script>
+
+</body>
+</html>
