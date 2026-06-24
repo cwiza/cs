@@ -424,7 +424,7 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     background: rgba(255,255,255,0.06);
     border: 1px solid var(--rule-dark);
     border-radius: 4px;
@@ -432,22 +432,24 @@
     cursor: pointer;
   }
   .theme-toggle-btn {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: #8B939E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 22px;
     background: transparent;
     border: none;
     border-radius: 3px;
-    padding: 3px 7px;
     cursor: pointer;
-    transition: background 0.12s, color 0.12s;
-    line-height: 1;
+    transition: background 0.12s;
+    color: #6B7480;
   }
   .theme-toggle-btn:hover { color: #D6DADE; }
   .theme-toggle-btn.active {
     background: var(--teal);
     color: #fff;
   }
+  .theme-toggle-btn svg { display: block; }
 
   @media (prefers-reduced-motion: reduce) {
     .cursor-blink { animation: none; }
@@ -464,8 +466,24 @@
     </div>
     <div class="titlebar-label">portfolio — workspace</div>
     <div class="theme-toggle" role="group" aria-label="Color theme">
-      <button class="theme-toggle-btn active" data-theme-set="light" aria-pressed="true">light</button>
-      <button class="theme-toggle-btn" data-theme-set="dark" aria-pressed="false">dark</button>
+      <button class="theme-toggle-btn active" data-theme-set="light" aria-pressed="true" aria-label="Light mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2" x2="12" y2="4"/>
+          <line x1="12" y1="20" x2="12" y2="22"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="2" y1="12" x2="4" y2="12"/>
+          <line x1="20" y1="12" x2="22" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <button class="theme-toggle-btn" data-theme-set="dark" aria-pressed="false" aria-label="Dark mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
   </div>
 
