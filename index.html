@@ -10,16 +10,16 @@
   :root {
     --paper: #F1F2EC;
     --paper-dim: #E8EAE2;
-    --chrome: #20242A;
-    --chrome-soft: #2B313A;
+    --chrome: #2A2724;
+    --chrome-soft: #302C29;
     --ink: #14171A;
     --ink-soft: #4A4F55;
     --rule: #C7CABF;
-    --rule-dark: #3A4148;
+    --rule-dark: #403C38;
     --teal: #169C84;
     --teal-bright: #2FC7A7;
-    --brass: #D88A1D;
-    --iris: #6B78F0;
+    --blush: #F0B3A6;
+    --gold: #F5CC5A;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
     --serif: 'Instrument Serif', serif;
@@ -167,7 +167,7 @@
     cursor: default;
     user-select: none;
   }
-  .file-meta .marker { color: var(--iris); opacity: 0.65; width: 12px; }
+  .file-meta .marker { color: var(--blush); opacity: 0.7; width: 12px; }
 
   /* Content pane */
   .pane {
@@ -185,7 +185,7 @@
     letter-spacing: 0.02em;
     margin-bottom: 22px;
   }
-  .eyebrow::before { content: "// "; color: var(--brass); }
+  .eyebrow::before { content: "// "; color: var(--gold); }
   h1.hero {
     font-family: var(--serif);
     font-style: normal;
@@ -197,7 +197,7 @@
     max-width: 720px;
     margin-bottom: 26px;
   }
-  h1.hero em { font-style: italic; color: var(--teal); }
+  h1.hero em { font-style: italic; color: var(--blush); }
   .hero-sub {
     font-size: 17px;
     color: var(--ink-soft);
@@ -208,7 +208,7 @@
     display: inline-block;
     width: 9px;
     height: 1.1em;
-    background: var(--brass);
+    background: var(--gold);
     vertical-align: text-bottom;
     animation: blink 1.1s step-end infinite;
   }
@@ -223,11 +223,11 @@
   .pill {
     font-family: var(--mono);
     font-size: 12px;
-    color: #7A4A10;
-    border: 1px solid rgba(216, 138, 29, 0.35);
+    color: #7A5A10;
+    border: 1px solid rgba(245, 204, 90, 0.45);
     border-radius: 8px;
     padding: 5px 11px;
-    background: rgba(216, 138, 29, 0.09);
+    background: rgba(245, 204, 90, 0.12);
   }
 
   .log {
@@ -243,7 +243,7 @@
     margin-top: 56px;
     margin-bottom: 16px;
   }
-  .section-label::before { content: "// "; color: var(--brass); }
+  .section-label::before { content: "// "; color: var(--gold); }
   .log-entry {
     display: grid;
     grid-template-columns: 90px 1fr;
@@ -260,7 +260,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--brass);
+    background: var(--gold);
   }
   .log-date {
     font-family: var(--mono);
@@ -314,7 +314,7 @@
     border-radius: 6px;
     font-family: var(--mono);
     font-size: 12.5px;
-    color: var(--brass);
+    color: var(--gold);
     background: var(--paper-dim);
   }
 
@@ -360,7 +360,7 @@
     padding: 7px 16px;
     border-top: 1px solid var(--rule-dark);
   }
-  .statusbar .branch::before { content: "⎇ "; color: var(--iris); }
+  .statusbar .branch::before { content: "⎇ "; color: var(--gold); }
   .statusbar-right { display: flex; flex-wrap: wrap; gap: 10px 18px; }
 
   @media (max-width: 1024px) {
@@ -478,7 +478,7 @@
           <span>FOCUS<b>Internal tooling</b></span>
         </div>
         <div class="cs-body">
-          <p style="font-family:var(--mono); font-size:12px; color:var(--brass); margin-bottom:20px;">// note — details here are intentionally generalized. The underlying work is confidential; this describes the design problem and approach, not the product itself.</p>
+          <p style="font-family:var(--mono); font-size:12px; color:var(--gold); margin-bottom:20px;">// note — details here are intentionally generalized. The underlying work is confidential; this describes the design problem and approach, not the product itself.</p>
           <h3>// the problem</h3>
           <p>Placeholder — describe the class of problem in general terms: what kind of cognitive load or workflow friction did expert users face, without naming the specific product or domain.</p>
 
